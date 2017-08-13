@@ -15,6 +15,7 @@ app.config['MONGO_PASSWORD'] = "more2Life"        # Need to figure out a more se
 app.config['MONGO_DBNAME'] = 'pymongo_test'
 #app.config['MONGO_URI'] = 'mongodb://mikefoong:more2Life@127.0.0.1:27107/pymongo_test'
 
+# Instantiate the mongodb connection
 mongo = PyMongo(app)
 
 @app.route('/')
@@ -24,9 +25,18 @@ def index():
 
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods=['POST'])
 def login():
-    return ''
+    users = mongo.db.users
+    login_user = users.find_one({ 'name' : request.form['username'] })
+
+    if login_user:
+        if bcrypt.checkpw(request.form['pass'].encode('utf-8'), login_user['password']):
+#        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password']) == login_user['password'].encode('utf-8'):
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+
+    return 'Invalid username/password combination'
 
 @app.route('/register', methods=['POST','GET'])
 def register():
@@ -35,8 +45,9 @@ def register():
         existing_user = users.find_one({ 'name' : request.form['username'] })
 
         if existing_user is None:
-            hashpass = bcrypt.hashpw(request.form['pass'], bcrypt.genSalt())
-            users.insert({ 'name' : request.form['username'], password : hashpass })
+
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt().encode('utf-8'))
+            users.insert({ 'name' : request.form['username'], 'password' : hashpass })
             session['username'] = request.form['username']
             return redirect(url_for('index'))
 
