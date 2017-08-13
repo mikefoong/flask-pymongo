@@ -7,7 +7,7 @@ import bcrypt
 app = Flask(__name__)
 
 # Setting up the application
-app.comfig['HOST'] ='127.0.0.1'                   # Change this to 0.0.0.0 if you wwant it to be accessible to external IPs
+app.config['HOST'] ='127.0.0.1'                   # Change this to 0.0.0.0 if you wwant it to be accessible to external IPs
 app.config['DEBUG'] = True
 app.config['MONGO_USERNAME'] = "mikefoong"
 app.config['MONGO_PASSWORD'] = "more2Life"        # Need to figure out a more secure way to connect to mongoDB without exposing ClearText passwords
@@ -22,7 +22,15 @@ def index():
     if 'username' in session:
         return 'You are logged in as ' + session['username']
 
-    return render_template
+    return render_template('index.html')
+
+@app.route('/login')
+def login():
+    return ''
+
+@app.route('/register')
+def register():
+    return ''   
 
 if __name__ == '__main__':
     app.secret_key = 'pysecret'
