@@ -1,5 +1,6 @@
 ## Flask-PyMongo
 
-Connecting to mongo using Flask-PyMongo from Flask and performing simple CRUD operations.
+* Connecting to mongo using Flask-PyMongo from Flask and performing simple CRUD operations.
+* Handling login
 
 
